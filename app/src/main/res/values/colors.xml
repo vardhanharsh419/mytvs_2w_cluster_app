@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimarygray">#D9C6C6C1</color>
+<!--    <color name="colorPrimaryblue">#17ACFF</color>-->
+    <color name="colordarkblue">#305AAC</color>
+    <color name="primarygreen">#228B22</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="transparent_color">#006E7072</color>
+    <color name="selected_box">#FFFFFF</color>
+
+
+
+
+    <color name="home_icon_color_active">#667DF3</color>
+    <color name="home_icon_color_inactive">#6E7072</color>
+    <color name="textuniv">#1C1D1E</color>
+    <color name="baseline_close">#1C1D1E</color>
+    <color name="trip_adapter_color">#FFFFFF</color>
+    <color name="settins_selected_color">#FFFFFF</color>
+
+</resources>

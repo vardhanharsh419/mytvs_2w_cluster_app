@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent_color">#00FFFFFF</color>
+    <color name="colorPrimarygray">#031729</color>
+<!--    <color name="colorPrimaryblue">#17ACFF</color>-->
+    <color name="selected_box">#1AFFFFFF</color>
+
+
+    <color name="home_icon_color_active">#FBBA14</color>
+    <color name="home_icon_color_inactive">#6E7072</color>
+    <color name="textuniv">#FFFFFF</color>
+    <color name="baseline_close">#FFFFFF</color>
+    <color name="trip_adapter_color">#031729B2</color>
+    <color name="settins_selected_color">#1AFFFFFF</color>
+
+</resources>

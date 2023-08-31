@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">tvs launcher</string>
+    <string name="title_activity_nav">Nav</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="home">HOME</string>
+    <string name="bluetooth">BLUETOOTH</string>
+    <string name="music">MEDIA</string>
+    <string name="slider_desc">Brightness</string>
+    <string name="music_calls">Music and Calls</string>
+    <string name="show_music">Show Music</string>
+    <string name="paired_devices">Paired Devices</string>
+
+    <string name="navigation">NAVIGATION</string>
+    <string name="alerts">ALERTS</string>
+    <string name="trips">TRIPS</string>
+    <string name="testpaireddevice">Ajay Kumar</string>
+    <string name="blesettings">Bluetooth Settings</string>
+    <string name="off">OFF</string>
+    <string name="on">ON</string>
+    <string name="navigationtxt">Navigation</string>
+    <string name="alerttxt">Alerts</string>
+    <string name="clearalerttxt">Clear Alerts</string>
+    <string name="tripstxt">Trips</string>
+    <string name="settingstxt">Settings</string>
+    <string name="settingsdisplaytxt">Display</string>
+    <string name="settingsbletxt">Bluetooth</string>
+    <string name="settingsdoctxt">Documents</string>
+    <string name="settingsabouttxt">About</string>
+
+    <string name="underline">This is an <u>underline</u>.</string>
+    <string name="google_maps_api_key">AIzaSyCYLcpPied0IM7CiVWY0xACBha3ibozq8Y</string>
+    <string name="title_activity_progress_bar">ProgressBar</string>
+
+</resources>

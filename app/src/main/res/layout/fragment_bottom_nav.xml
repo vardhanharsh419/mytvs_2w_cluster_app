@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/bottom_nav_bg"
+    tools:context=".Fragments.BottomNav">
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sidestandlayout"
+            layout="@layout/side_stand_layout" />
+
+<!--        <include-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/calllayout"-->
+<!--            layout="@layout/call_layout" />-->
+
+<!--        <include-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/documentlayout"-->
+<!--            layout="@layout/settings_documents_layout" />-->
+
+<!--        <include-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/aboutlayout"-->
+<!--            layout="@layout/settings_about_layout" />-->
+
+
+</LinearLayout>
