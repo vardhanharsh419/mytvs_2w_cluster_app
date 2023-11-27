@@ -68,6 +68,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-android:1.5.0")
+    implementation("androidx.room:room-common:2.5.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -80,5 +81,15 @@ dependencies {
     implementation ("com.fasterxml.jackson.core:jackson-annotations:2.10.1")
     implementation ("com.fasterxml.jackson.core:jackson-databind:2.10.1")
     implementation("com.github.skornei:restserver:1.0.4")
+
+    // ViewModel
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0")
+    implementation ("androidx.core:core-ktx:1.3.2")
+
+
+    implementation ("com.github.niedev:BluetoothCommunicator:1.0.6")
+
 
 }

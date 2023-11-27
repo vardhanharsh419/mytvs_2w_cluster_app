@@ -53,22 +53,4 @@ public class PairedDevicesAdapter extends RecyclerView.Adapter<PairedDevicesAdap
         return paireddevices.size();
     }
 
-//    public void removeItem(int position) {
-//        cartList.remove(position);
-//        // notify the item removed by position
-//        // to perform recycler view delete animations
-//        // NOTE: don't call notifyDataSetChanged()
-//        notifyItemRemoved(position);
-//    }
-//
-//    public void restoreItem(doctors_item item, int position) {
-//        cartList.add(position, item);
-//        // notify item added by position
-//        notifyItemInserted(position);
-//    }
-//
-//    public void filterList(List<doctors_item> filterdNames) {
-//        this.cartList = filterdNames;
-//        notifyDataSetChanged();
-//    }
 }

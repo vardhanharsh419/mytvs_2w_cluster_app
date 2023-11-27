@@ -4,6 +4,8 @@ import static com.example.tvslauncher.R.drawable.bg_light;
 import static com.example.tvslauncher.R.drawable.bluetooth_bg_dark;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -22,26 +24,14 @@ import android.widget.TextView;
 import com.example.tvslauncher.Adapters.AlertAdapter;
 import com.example.tvslauncher.Adapters.PairedDevicesAdapter;
 import com.example.tvslauncher.R;
+import com.example.tvslauncher.Util.RecyclerItemClickListener;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AlertFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AlertFragment extends Fragment implements RecyclerView.OnItemTouchListener{
+public class AlertFragment extends Fragment implements RecyclerView.OnItemTouchListener, RecyclerItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private ArrayList<Integer> alertimages = new ArrayList<>();
     private ArrayList<String> alerttext = new ArrayList<>();
 
@@ -51,24 +41,13 @@ public class AlertFragment extends Fragment implements RecyclerView.OnItemTouchL
     private RecyclerView alertrecycler;
     private MaterialCardView alertlayout;
 
-    public AlertFragment() {
-        // Required empty public constructor
-    }
+    public AlertFragment() {}
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AlertFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static AlertFragment newInstance(String param1, String param2) {
         AlertFragment fragment = new AlertFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+//        args.putString(ARG_PARAM1, param1);
+//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,15 +56,14 @@ public class AlertFragment extends Fragment implements RecyclerView.OnItemTouchL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_alert, container, false);
     }
 
@@ -100,14 +78,18 @@ public class AlertFragment extends Fragment implements RecyclerView.OnItemTouchL
         alertlayout = view.findViewById(R.id.alertlayout);
 
         alertimages.add(R.drawable.spanner_alert);
+        alertimages.add(R.drawable.spanner_alert);
+        alertimages.add(R.drawable.spanner_alert);
         alertimages.add(R.drawable.shield_alert);
         alertimages.add(R.drawable.battery_white);
 
-        alerttext.add("Your vehicle next service due on 1500 km");
-        alerttext.add("Your vehicle insurance policy expires on Aug 20th 2023");
+        alerttext.add("Engine Temperature Sensor issue found");
+        alerttext.add("Fuel Pump issue found");
+        alerttext.add("Your vehicle next service due in 4500 km");
+        alerttext.add("Your vehicle insurance policy expires on Sept 20th 2023");
         alerttext.add("Battery Voltage is too Low");
 
-        alertadapter = new AlertAdapter(getActivity(), alerttext, alertimages);
+        alertadapter = new AlertAdapter(getActivity(), alerttext, alertimages, this);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         alertrecycler.setLayoutManager(mLayoutManager);
@@ -149,5 +131,41 @@ public class AlertFragment extends Fragment implements RecyclerView.OnItemTouchL
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
+    }
+
+
+    @Override
+    public void onRecyclerItemClick(int position) {
+        if (position == 0 || position == 1 || position == 3) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            final View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_layout, null);
+            builder.setView(customLayout);
+            TextView errorCode = customLayout.findViewById(R.id.textErrorCode);
+            TextView errorComponent = customLayout.findViewById(R.id.textErrorComponent);
+            TextView errorDesc = customLayout.findViewById(R.id.textErrorDesc);
+            if (position == 0) {
+                errorCode.setText("Error Code - P1238");
+                errorComponent.setText("Component affected - Engine Temperature Sensor");
+                builder.setTitle("DTC error code found");
+                errorDesc.setText("Short to Supply/Open circuit (Lower Limit Failure)");
+            }
+            if (position == 1) {
+                errorCode.setText("Error Code - P0628");
+                errorComponent.setText("Component affected - Fuel Pump");
+                builder.setTitle("DTC error code found");
+                errorDesc.setText("Fuel pump short to ground/open circuit");
+            }
+            if (position == 3) {
+                errorCode.setText("Your Royal Sundaram insurance is about to expire");
+                errorComponent.setText("Insurance expiry date - Sept 20th 2023");
+                builder.setTitle("Insurance policy expiring soon");
+            }
+            builder.setCancelable(false);
+            builder.setNegativeButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
+                dialog.cancel();
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
     }
 }

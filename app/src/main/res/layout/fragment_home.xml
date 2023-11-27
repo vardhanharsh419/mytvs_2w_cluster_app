@@ -7,17 +7,17 @@
     android:background="@color/transparent_color"
     tools:context=".ui.home.HomeFragment">
 
-<!--    <com.example.tvslauncher.SemiCircleProgressBarView-->
-<!--        android:id="@+id/progress"-->
-<!--        android:layout_width="200dp"-->
-<!--        android:layout_height="200dp"-->
-<!--        android:backgroundTint="@color/transparent_color"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/imageView2"-->
-<!--        app:layout_constraintEnd_toEndOf="@id/imageView2"-->
-<!--        app:layout_constraintHorizontal_bias="1.8"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/imageView2"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/imageView2"-->
-<!--        app:layout_constraintVertical_bias="1.7" />-->
+    <!--    <com.example.tvslauncher.SemiCircleProgressBarView-->
+    <!--        android:id="@+id/progress"-->
+    <!--        android:layout_width="200dp"-->
+    <!--        android:layout_height="200dp"-->
+    <!--        android:backgroundTint="@color/transparent_color"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/imageView2"-->
+    <!--        app:layout_constraintEnd_toEndOf="@id/imageView2"-->
+    <!--        app:layout_constraintHorizontal_bias="1.8"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/imageView2"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/imageView2"-->
+    <!--        app:layout_constraintVertical_bias="1.7" />-->
 
     <ImageView
         android:id="@+id/imageView2"
@@ -70,28 +70,27 @@
         android:id="@+id/fuel_bar"
         android:layout_width="350dp"
         android:layout_height="350dp"
-        android:src="@drawable/fuel_bar"
-        android:rotation="-5"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="1.2"
-        app:layout_constraintHorizontal_bias="2.1"/>
-
-
-    <ImageView
-        android:id="@+id/fuel_indicator"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:src="@drawable/fuel_indicator_dark"
-        android:rotation="-5"
+        android:rotation="-15"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView2"
         app:layout_constraintStart_toStartOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="@+id/imageView2"
         app:layout_constraintVertical_bias="1.3"
-        app:layout_constraintHorizontal_bias="2.4"/>
+        app:layout_constraintHorizontal_bias="2.2"/>
+
+
+    <ImageView
+        android:id="@+id/fuel_indicator"
+        android:layout_width="330dp"
+        android:layout_height="330dp"
+        android:rotation="0"
+        android:src="@drawable/fuel_indicator_dark"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="1.3"
+        app:layout_constraintHorizontal_bias="2.1"/>
 
     <ImageView
         android:id="@+id/fuel_icon"
@@ -384,7 +383,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.186" />
-t
+        t
         <TextView
             android:id="@+id/triptime"
             android:layout_width="wrap_content"

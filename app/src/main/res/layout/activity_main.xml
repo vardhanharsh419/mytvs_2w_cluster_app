@@ -60,13 +60,14 @@
         app:layout_constraintStart_toStartOf="parent"></FrameLayout>
 
 
-    <TextView
+    <TextClock
         android:id="@+id/systemtime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="awesgfseghfgmhk,"
         android:textSize="22sp"
         android:textStyle="bold"
+        android:format12Hour="hh:mm a"
         android:textColor="@color/textuniv"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -26,9 +27,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -36,8 +40,11 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.tvslauncher.Bluetooth.BleDevices;
 import com.example.tvslauncher.Common.PhonecallReceiver;
 import com.example.tvslauncher.Components.AlertFragment;
 import com.example.tvslauncher.Components.BluetoothFrag;
@@ -50,6 +57,8 @@ import com.example.tvslauncher.Fragments.RightNav;
 import com.example.tvslauncher.Fragments.TopNav;
 import com.example.tvslauncher.Fragments.LeftNav;
 import com.example.tvslauncher.Server.MainServer;
+import com.example.tvslauncher.extras.HeartbeartService;
+import com.example.tvslauncher.extras.MyBackgroundService;
 import com.example.tvslauncher.ui.home.HomeFragment;
 
 import java.io.IOException;
@@ -66,12 +75,21 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentManager manager;
     private FragmentTransaction transaction;
-    private TextView systemtime, systemdate;
+    private TextClock systemtime;
+    private TextView systemdate;
     private ImageView settings;
     private PhonecallReceiver call;
     private MainServer mainServer = new MainServer();
     BluetoothManager bluetoothManager;
     BluetoothAdapter bluetoothAdapter;
+    int currentFragment = 1;
+    private int HOME_FRAGMENT = 1;
+    private int BLUETOOTH_FRAGMENT = 2;
+    private int MEDIA_FRAGMENT = 3;
+    private int NAVIGATION_FRAGMENT = 4;
+    private int ALERT_FRAGMENT = 5;
+    private int TRIP_FRAGMENT = 6;
+    private int SETTING_FRAGMENT = 7;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -79,19 +97,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        askForPermissions(MainActivity.this);
 
         systemdate = findViewById(R.id.systemdate);
         systemtime = findViewById(R.id.systemtime);
         settings = findViewById(R.id.settings);
 
-        bluetoothManager = getSystemService(BluetoothManager.class);
-        bluetoothAdapter = bluetoothManager.getAdapter();
-
-        try{
-            mainServer.start();
-            } catch (IOException e) {
-            throw new RuntimeException(e);
+        // Clean fragments (only if the app is recreated (When user disable permission))
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+
+        // Remove previous fragments (case of the app was restarted after changed permission on android 6 and higher)
+        List<Fragment> fragmentList = fragmentManager.getFragments();
+        for (Fragment fragment : fragmentList) {
+            if (fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commit();
+            }
+        }
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("BDATA"));
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,86 +156,9 @@ public class MainActivity extends AppCompatActivity {
 
         getdate();
 
-//        RestServerManager.initialize(MainActivity.this.getApplication());
-//        try {
-//            mainServer.start();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-
-
-        if (bluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
-        }
-
-
-        if (!bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                askForPermissions(MainActivity.this);
-                return;
-            }
-
-            bluetoothAdapter.enable();
-            bluetoothAdapter.startDiscovery();
-            startActivityForResult(enableBtIntent, 1);
-        }
-
-
-
-
-        implementListeners();
+//        getabsize();
 
     }
-    BluetoothDevice[] bluetoothDevices;
-
-    private void implementListeners() {
-        // listelemeye tıklayınca neler olacak
-
-            // devices cihazların listelendiği
-            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
-                Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-
-                // cihazların değeri kadar al ve diziye ata
-                String[] strings = new String[devices.size()];
-
-                // bluetoothDevices size değerini ata
-                bluetoothDevices = new BluetoothDevice[devices.size()];
-
-                // index değeri 0 olarak verdik.
-                int index = 0;
-
-                // cihazlarının boyutu 0 dan büyükse
-                if (devices.size() > 0) {
-
-                    // loop ile cihazları döndür.
-                    for (BluetoothDevice device : devices) {
-
-                        // bluetoothDevices index değerine device ata
-                        bluetoothDevices[index] = device;
-
-                        // isimleri index değerine koy
-                        strings[index] = device.getName();
-
-                        // index değerini arttır
-                        index++;
-                    }
-
-                    // adapter nesnesi tanımlandı.
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, strings);
-
-                    // listview'e adapteri ata
-//                    listView.setAdapter(arrayAdapter);
-                    Log.d("aResztdxyftgjhkj", "implementListeners: " + arrayAdapter);
-                }
-            }
-
-
-    }
-
 
     public static void askForPermissions(Activity activity) {
         List<String> permissionsToAsk = new ArrayList<>();
@@ -224,6 +173,19 @@ public class MainActivity extends AppCompatActivity {
                 PackageManager.PERMISSION_GRANTED) {
             // Ask for permission
             permissionsToAsk.add(android.Manifest.permission.BLUETOOTH_CONNECT);
+        }
+        if (ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.BLUETOOTH_SCAN) !=
+                PackageManager.PERMISSION_GRANTED) {
+            // Ask for permission
+            permissionsToAsk.add(Manifest.permission.BLUETOOTH_SCAN);
+        }
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionsToAsk.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionsToAsk.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
 
         if (permissionsToAsk.size() > 0) {
@@ -273,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
                         | SYSTEM_UI_FLAG_FULLSCREEN
                         | SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-
     }
 
     public void replacefrag(int homeFragmentClass, String fragtag) {
@@ -301,14 +262,13 @@ public class MainActivity extends AppCompatActivity {
 
         transaction = manager.beginTransaction();
 
-        try {
-//            Fragment fragment = manager.findFragmentByTag(fragtag);
-//
-//                if(fragment == null) {
-//                    transaction.add(R.id.My_Container_4_ID, frg, fragtag);
-//                }else {
-                    transaction.replace(R.id.My_Container_4_ID, frg, fragtag);
-//                }
+        Log.d("DAddd", String.valueOf(getCurrentFragment()));
+        Log.d("DAddd", String.valueOf(homeFragmentClass));
+        Log.d("DAddd", String.valueOf(getCurrentFragment() == homeFragmentClass));
+
+        if(getCurrentFragment() != homeFragmentClass) {
+            try {
+                transaction.replace(R.id.My_Container_4_ID, frg, fragtag);
 
                 if (counter == 1) {
                     setScreenSize(R.id.My_Container_4_ID, 90, 3);
@@ -319,29 +279,145 @@ public class MainActivity extends AppCompatActivity {
 
                 transaction.commit();
 
-        } catch (Exception e) {
-            Log.d("afwfgs", String.valueOf(e));
+            } catch (Exception e) {
+                Log.d("afwfgs", String.valueOf(e));
+            }
         }
 
     }
 
     private void getdate() {
-        Date dt = new Date(String.valueOf(Calendar.getInstance().getTime()));
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
-        SimpleDateFormat sdf2 = new SimpleDateFormat("MMM dd");
 
-        systemdate.setText(sdf2.format(dt));
-        systemtime.setText(sdf.format(dt));
+            systemdate.setText(null);
+//                systemtime.setText(null);
 
+            Date dt = new Date(String.valueOf(Calendar.getInstance().getTime()));
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+            SimpleDateFormat sdf2 = new SimpleDateFormat("MMM dd");
+
+            systemdate.setText(sdf2.format(dt));
+//                systemtime.setText(sdf.format(dt));
+
+
+    }
+
+    public int getCurrentFragment() {
+        if (currentFragment != 1) {
+            return currentFragment;
+        } else {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.My_Container_4_ID);
+            if (currentFragment != null) {
+                if (currentFragment.getClass().equals(HomeFragment.class)) {
+                    return HOME_FRAGMENT;
+                }
+                if (currentFragment.getClass().equals(BluetoothFrag.class)) {
+                    return BLUETOOTH_FRAGMENT;
+                }
+                if (currentFragment.getClass().equals(MediaFragment.class)) {
+                    return MEDIA_FRAGMENT;
+                }
+                if (currentFragment.getClass().equals(NavigationFragment.class)) {
+                    return NAVIGATION_FRAGMENT;
+                }
+                if (currentFragment.getClass().equals(AlertFragment.class)) {
+                    return ALERT_FRAGMENT;
+                }
+                if (currentFragment.getClass().equals(TripsFragment.class)) {
+                    return TRIP_FRAGMENT;
+                }
+                if (currentFragment.getClass().equals(SettingsFragment.class)) {
+                    return SETTING_FRAGMENT;
+                }
+            }
+        }
+        return 1;
+
+    }
+
+    private void getabsize() {
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        int widthPixels = metrics.widthPixels;
+        int heightPixels = metrics.heightPixels;
+
+        float scaleFactor = metrics.density;
+        float widthDp = widthPixels / scaleFactor;
+        float heightDp = heightPixels / scaleFactor;
+
+        float widthDpi = metrics.xdpi;
+        float heightDpi = metrics.ydpi;
+
+        float widthInches = widthPixels / widthDpi;
+        float heightInches = heightPixels / heightDpi;
+
+        double diagonalInches = Math.sqrt(
+                (widthInches * widthInches)
+                        + (heightInches * heightInches));
+
+        Log.d("tabsize", "getabsize: " + diagonalInches);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+//        unregisterReceiver(receiver);
+
 
         // Don't forget to unregister the ACTION_FOUND receiver.
 //        unregisterReceiver(receiver);
+    }
+
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            /* add below code in the Activity/Frag from where you want to send data
+
+//            Intent intent = new Intent("BDATA");
+//            intent.putExtra("peerId", "s45269d5df");
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+            */
+        }
+    };
+
+
+    @SuppressLint("MissingPermission")
+    protected void makeDiscoverable(){
+        // Make local device discoverable
+        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 50000);
+        startActivityForResult(discoverableIntent, 1);
+    }
+
+    public double tabletSize() {
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width=dm.widthPixels;
+        int height=dm.heightPixels;
+        int dens=dm.densityDpi;
+        double wi=(double)width/(double)dens;
+        double hi=(double)height/(double)dens;
+        double x = Math.pow(wi,2);
+        double y = Math.pow(hi,2);
+        double screenInches = Math.sqrt(x+y);
+
+        return screenInches;
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getdate();
     }
 
 }

@@ -4,6 +4,8 @@ import static com.example.tvslauncher.R.drawable.bg_light;
 import static com.example.tvslauncher.R.drawable.bluetooth_bg_dark;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -31,58 +33,28 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.slider.Slider;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SettingsFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private MaterialCardView settingslayout;
-
     private View display, bluetooth, documents, about;
     private MaterialCardView displaylean, bluetoothlean, documentslean, aboutlean;
     public Button lightbutton, darkbutton, autobutton;
     public MaterialSwitch bleswitch, callswitch, musicswitch;
     public Slider brigthnesslider;
+    private BluetoothManager bluetoothManager;
+    private BluetoothAdapter bluetoothAdapter;
 
     public SettingsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SettingsFragment newInstance(String param1, String param2) {
         SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -93,9 +65,12 @@ public class SettingsFragment extends Fragment {
     }
 
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint({"ResourceAsColor", "MissingPermission"})
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        bluetoothManager = getContext().getSystemService(BluetoothManager.class);
+        bluetoothAdapter = bluetoothManager.getAdapter();
 
         settingslayout = view.findViewById(R.id.settings_frag);
         display = view.findViewById(R.id.displaylayout);
@@ -120,6 +95,13 @@ public class SettingsFragment extends Fragment {
         bluetooth.setVisibility(View.GONE);
         about.setVisibility(View.GONE);
         documents.setVisibility(View.GONE);
+
+
+        if(bluetoothAdapter.isEnabled()){
+            bleswitch.setChecked(true);
+            bleswitch.setTrackTintList(ColorStateList.valueOf(Color.GREEN));
+        }
+
 
         displaylean.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,11 +204,13 @@ public class SettingsFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b == true) {
                     bleswitch.setChecked(true);
+                    bluetoothAdapter.enable();
                     bleswitch.setTrackTintList(ColorStateList.valueOf(Color.GREEN));
                 }
                 else{
                     bleswitch.setChecked(false);
                     bleswitch.setTrackTintList(ColorStateList.valueOf(Color.WHITE));
+                    bluetoothAdapter.disable();
                 }
             }
         });
